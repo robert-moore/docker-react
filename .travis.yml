@@ -5,4 +5,19 @@ services:
 
 before_install:
   - docker build -t floomapp/docker-react -f Dockerfile.dev .
+
+script:
   - docker run -e CI=true floomapp/docker-react npm run test
+
+deploy:
+  edge: true
+  provider: elasticbeanstalk
+  region: us-east-1
+  app: docker-react
+  env: DockerReact-env
+  bucket_name: elasticbeanstalk-us-east-1-327232318798
+  bucket_path: docker-react # uses same bucket for all EBS envs, this is not created until after first deploy
+  on:
+    branch: master
+  access_key_id: '$AWS_ACCESS_KEY'
+  secret_access_key: '$AWS_SECRET_KEY'
